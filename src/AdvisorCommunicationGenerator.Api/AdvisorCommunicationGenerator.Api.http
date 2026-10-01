@@ -1,0 +1,6 @@
+@AdvisorCommunicationGenerator.Api_HostAddress = http://localhost:5194
+
+GET {{AdvisorCommunicationGenerator.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

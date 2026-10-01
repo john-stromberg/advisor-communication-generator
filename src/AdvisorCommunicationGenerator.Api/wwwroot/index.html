@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advisor Communication Generator</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap: 12px; }
+    input, select, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+    textarea { height: 90px; }
+    button { margin-top: 12px; padding: 10px 14px; }
+    pre { background: #111; color: #eee; padding: 12px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Advisor Communication Generator</h1>
+  <p>Generate plain-English client update drafts with configurable tone and compliance-safe language.</p>
+
+  <div class="grid">
+    <input id="clientName" value="Jordan Anderson" placeholder="Client Name" />
+    <input id="advisorName" value="Advisor A" placeholder="Advisor Name" />
+    <select id="tone">
+      <option>Reassuring</option>
+      <option selected>Balanced</option>
+      <option>Direct</option>
+    </select>
+    <input id="periodLabel" value="Q3 2026" placeholder="Period Label" />
+    <input id="portfolioChangePercent" type="number" step="0.1" value="2.4" placeholder="Portfolio Change %" />
+    <input id="benchmarkChangePercent" type="number" step="0.1" value="1.7" placeholder="Benchmark Change %" />
+  </div>
+
+  <h3>Market Summary</h3>
+  <textarea id="marketSummary">Equity markets recovered late in the quarter while yields remained elevated.</textarea>
+
+  <h3>Action Context (optional)</h3>
+  <textarea id="actionContext">At our next meeting, we can revisit your allocation bands and planned distributions.</textarea>
+
+  <button id="generateBtn">Generate Draft</button>
+  <pre id="output">Waiting...</pre>
+
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const payload = {
+        clientName: document.getElementById('clientName').value,
+        advisorName: document.getElementById('advisorName').value,
+        tone: document.getElementById('tone').value,
+        periodLabel: document.getElementById('periodLabel').value,
+        portfolioChangePercent: parseFloat(document.getElementById('portfolioChangePercent').value),
+        benchmarkChangePercent: parseFloat(document.getElementById('benchmarkChangePercent').value),
+        marketSummary: document.getElementById('marketSummary').value,
+        actionContext: document.getElementById('actionContext').value
+      };
+
+      const res = await fetch('/api/communication/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
